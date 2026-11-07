@@ -1,0 +1,31 @@
+# Replace the image placeholder with the image name and version from your licence email.
+services:
+  nonimo-gateway:
+    image: "<image-from-your-licence-email>:VERSION"
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    ulimits:
+      core: 0
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      NONIMO_CLAVE_DESTINO_FICHERO: /run/secrets/clave_proveedor
+      NONIMO_CLAVE_ENTRADA_FICHERO: /run/secrets/clave_entrada
+      NONIMO_LICENCIA: /etc/nonimo/licencia.nli
+    volumes:
+      - nonimo-datos:/var/lib/nonimo
+      - ./licencia.nli:/etc/nonimo/licencia.nli:ro
+    secrets:
+      - clave_proveedor
+      - clave_entrada
+
+volumes:
+  nonimo-datos:
+
+secrets:
+  clave_proveedor:
+    file: ./clave_proveedor.txt
+  clave_entrada:
+    file: ./clave_entrada.txt

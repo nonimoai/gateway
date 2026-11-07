@@ -1,0 +1,9 @@
+{
+  "name": "nonimo-gateway-example",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "openai": "^6.0.0"
+  }
+}

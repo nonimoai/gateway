@@ -1,0 +1,9 @@
+licencia.nli
+*.nli
+clave_proveedor.txt
+clave_entrada.txt
+*.env
+.env*
+node_modules/
+__pycache__/
+.venv/
