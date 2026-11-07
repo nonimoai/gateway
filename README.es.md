@@ -11,7 +11,7 @@ Página del producto: <https://nonimo.ai/es/gateway/> · Contacto: <gateway@noni
 ## Qué necesitas
 
 - Un servidor Linux `amd64` o `arm64` con Docker.
-- Salida HTTPS hacia tu proveedor de IA y hacia el servicio de licencias de Nonimo (salvo en el plan sin conexión).
+- Salida HTTPS hacia tu proveedor de IA y hacia el servicio de licencias de Nonimo.
 - Tu fichero de licencia, `licencia.nli`, y el correo de tu licencia, que trae la orden para entrar en el registro, el nombre de la imagen y la versión.
 
 ## Instalar con Docker Compose

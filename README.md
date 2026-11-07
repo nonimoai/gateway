@@ -11,7 +11,7 @@ Product page: <https://nonimo.ai/gateway/> · Contact: <gateway@nonimo.ai>
 ## What you need
 
 - A Linux `amd64` or `arm64` server with Docker.
-- Outbound HTTPS to your AI provider and to Nonimo's licence service (except on the offline plan).
+- Outbound HTTPS to your AI provider and to Nonimo's licence service.
 - Your licence file, `licencia.nli`, and your licence email, which has the registry login command, the image name and the version.
 
 ## Install with Docker Compose
