@@ -18,7 +18,7 @@
 # Running it again with a new code updates the licence and the version. It
 # never overwrites existing keys.
 #
-# Source: https://github.com/nonimoai/gateway (MIT licence).
+# Source and licence: https://nonimo.ai/gateway/ (installer under the MIT licence).
 
 set -eu
 
