@@ -287,7 +287,7 @@ main() {
 		400 | 403 | 404 | 409 | 410 | 422)
 			die "this install code is used, expired or wrong${MOTIVO:+ ($MOTIVO)}. Ask for a new one at https://nonimo.ai" ;;
 		429) die "too many attempts. Wait a few minutes and try again" ;;
-		*) die "the licence service answered HTTP $HTTP${MOTIVO:+ ($MOTIVO)}. Try again later or write to gateway@nonimo.ai" ;;
+		*) die "the licence service answered HTTP $HTTP${MOTIVO:+ ($MOTIVO)}. Try again later or write to hello@nonimo.ai" ;;
 		esac
 
 		LICENCIA_B64=$(json_texto licencia "$TMP/respuesta" | tr -d ' \t')
@@ -365,7 +365,7 @@ main() {
 	else
 		base64 <"$TMP/licencia.nli" | tr -d '\n' |
 			$SUDO docker login "$REGISTRO" -u nonimo --password-stdin >/dev/null ||
-			die "the registry refused the licence. Write to gateway@nonimo.ai"
+			die "the registry refused the licence. Write to hello@nonimo.ai"
 	fi
 	rm -f "$TMP/licencia.nli"
 
@@ -396,7 +396,7 @@ main() {
 		if [ "$ESTADO" != healthy ]; then
 			err "the Gateway is not healthy (status: $ESTADO). Last log lines:"
 			$COMPOSE logs --tail 30 </dev/null >&2 || true
-			die "fix the error above and run the installer again, or write to gateway@nonimo.ai"
+			die "fix the error above and run the installer again, or write to hello@nonimo.ai"
 		fi
 	fi
 

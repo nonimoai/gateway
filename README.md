@@ -6,7 +6,7 @@ Nonimo Gateway runs on **your own server**, between your applications and your A
 
 > **This repository is not the Gateway's source code.** Nonimo Gateway is closed-source, commercial software, distributed as a private Docker image. This repository only holds the installer, a Docker Compose example, client examples and installation notes. You need a licence to download the image.
 
-Product page: <https://nonimo.ai/gateway/> · Contact: <gateway@nonimo.ai>
+Product page: <https://nonimo.ai/gateway/> · Contact: <hello@nonimo.ai>
 
 ## What you need
 
@@ -183,4 +183,4 @@ The files in this repository are under the [MIT licence](LICENSE). That licence 
 
 ## Contributing
 
-This repository is read-only and doesn't accept contributions. For questions or security reports, email <gateway@nonimo.ai>.
+This repository is read-only and doesn't accept contributions. For questions or security reports, email <hello@nonimo.ai>.
