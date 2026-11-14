@@ -7,7 +7,7 @@ const client = new OpenAI({
 });
 
 const response = await client.chat.completions.create({
-  model: process.env.MODEL ?? "gpt-4o-mini",
+  model: process.env.MODEL ?? "gpt-6.1-terra",
   messages: [
     {
       role: "user",

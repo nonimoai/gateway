@@ -7,3 +7,7 @@ clave_entrada.txt
 node_modules/
 __pycache__/
 .venv/
+clave_panel.txt
+clave_openai.txt
+clave_anthropic.txt
+docker-compose.yml.bak-*

@@ -9,7 +9,7 @@ client = OpenAI(
 )
 
 response = client.chat.completions.create(
-    model=os.environ.get("MODEL", "gpt-4o-mini"),
+    model=os.environ.get("MODEL", "gpt-6.1-terra"),
     messages=[
         {
             "role": "user",
