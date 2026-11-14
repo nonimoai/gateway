@@ -13,12 +13,12 @@ Página del producto: <https://nonimo.ai/es/gateway/> · Contacto: <gateway@noni
 - Un servidor Linux `amd64` o `arm64` con Docker y Docker Compose v2 (`docker compose`).
 - Ser root, o un usuario con `sudo`.
 - Salida HTTPS hacia tu proveedor de IA y hacia el servicio de licencias de Nonimo.
-- El código de instalación del correo de tu prueba o de tu licencia (`XXXX-XXXX`). Sirve una vez y dura 48 horas.
+- El código de instalación del correo de tu prueba o de tu licencia (`XXXX-XXXX-XXXX`). Sirve una vez y dura 48 horas.
 
 ## Instalación en una línea
 
 ```bash
-curl -fsSL https://nonimo.ai/gateway/instalar.sh | sh -s -- --codigo XXXX-XXXX
+curl -fsSL https://nonimo.ai/gateway/instalar.sh | sh -s -- --codigo XXXX-XXXX-XXXX
 ```
 
 El instalador:
@@ -41,7 +41,7 @@ Si tu política de seguridad no permite `curl | sh`, descarga el script, revísa
 curl -fsSLo install.sh https://nonimo.ai/gateway/instalar.sh
 sha256sum install.sh   # compáralo con el valor del correo de tu licencia
 less install.sh
-sh install.sh --codigo XXXX-XXXX
+sh install.sh --codigo XXXX-XXXX-XXXX
 ```
 
 | Opción | Valor de serie | Qué hace |

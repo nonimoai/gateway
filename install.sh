@@ -1,13 +1,13 @@
 #!/bin/sh
 # Nonimo Gateway installer for Linux (amd64 and arm64).
 #
-#   curl -fsSL https://nonimo.ai/gateway/instalar.sh | sh -s -- --codigo XXXX-XXXX
+#   curl -fsSL https://nonimo.ai/gateway/instalar.sh | sh -s -- --codigo XXXX-XXXX-XXXX
 #
 # Or download it, read it, check its sha256 and run it:
 #
 #   curl -fsSLo install.sh https://nonimo.ai/gateway/instalar.sh
 #   sha256sum install.sh
-#   sh install.sh --codigo XXXX-XXXX
+#   sh install.sh --codigo XXXX-XXXX-XXXX
 #
 # What it does: checks the server, redeems your one-time install code for the
 # licence, logs in to the image registry, creates the access key and the panel
@@ -23,7 +23,8 @@
 set -eu
 
 DIR=/opt/nonimo-gateway
-API=https://api.nonimo.ai
+# NONIMO_API points the installer at another licence service (the test one, for example).
+API=${NONIMO_API:-https://api.nonimo.ai}
 CODIGO=
 ENSAYO=0
 PUERTO=8080
@@ -40,7 +41,7 @@ usage() {
 	cat <<'EOF'
 Nonimo Gateway installer (Linux, amd64/arm64)
 
-Usage: sh install.sh --codigo XXXX-XXXX [options]
+Usage: sh install.sh --codigo XXXX-XXXX-XXXX [options]
 
   --codigo CODE       one-time install code from your licence email (required)
   --dir PATH          install folder (default /opt/nonimo-gateway)
@@ -171,6 +172,8 @@ main() {
 		esac
 	done
 
+	# The code is Crockford base32 in capitals: accept it typed in lower case too.
+	CODIGO=$(printf '%s' "$CODIGO" | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 	case $CODIGO in
 	'') die "missing --codigo: use the install code from your licence email" ;;
 	*[!A-Za-z0-9-]*) die "--codigo has unexpected characters: copy it from your licence email" ;;
@@ -277,6 +280,7 @@ main() {
 			"$API/v1/gwlicencia" </dev/null) ||
 			die "can't reach $API: the server needs outbound HTTPS"
 		MOTIVO=$(json_texto error "$TMP/respuesta" 2>/dev/null || true)
+		[ "$HTTP" = 410 ] && die "this install code has expired or was already used. Ask for a new one at https://nonimo.ai"
 		[ -n "$MOTIVO" ] || MOTIVO=$(json_texto motivo "$TMP/respuesta" 2>/dev/null || true)
 		case $HTTP in
 		200) ;;
@@ -289,7 +293,9 @@ main() {
 		LICENCIA_B64=$(json_texto licencia "$TMP/respuesta" | tr -d ' \t')
 		IMAGEN=$(json_texto imagen "$TMP/respuesta")
 		VERSION=$(json_texto version "$TMP/respuesta")
-		CADUCA=$(json_texto caduca "$TMP/respuesta")
+		CADUCA=$(json_texto fin_prueba "$TMP/respuesta" 2>/dev/null || true)
+		ES_PRUEBA=0
+		if [ -n "$CADUCA" ]; then ES_PRUEBA=1; else CADUCA=$(json_texto caduca "$TMP/respuesta" 2>/dev/null || true); fi
 		rm -f "$TMP/respuesta"
 
 		case $LICENCIA_B64 in '' | *[!A-Za-z0-9+/=]*) die "the licence service sent an unexpected licence" ;; esac
@@ -402,7 +408,11 @@ main() {
 		return 0
 	fi
 	say "Nonimo Gateway $VERSION is running."
-	[ -n "$CADUCA" ] && say "Licence valid until $CADUCA."
+	if [ -n "$CADUCA" ] && [ "${ES_PRUEBA:-0}" = 1 ]; then
+		say "Free trial: it ends on $CADUCA. Add payment in the panel before then and it keeps working."
+	elif [ -n "$CADUCA" ]; then
+		say "Licence valid until $CADUCA."
+	fi
 	say ""
 	if [ "$NUEVA_ENTRADA" = 1 ]; then
 		say "Access key for your applications (shown only now; it is also in"
