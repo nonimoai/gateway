@@ -363,10 +363,19 @@ main() {
 	if [ "$ENSAYO" = 1 ]; then
 		say "  + base64 licencia.nli | $SUDO${SUDO:+ }docker login $REGISTRO -u nonimo --password-stdin"
 	else
-		base64 <"$TMP/licencia.nli" | tr -d '\n' |
-			$SUDO docker login "$REGISTRO" -u nonimo --password-stdin >/dev/null ||
+		# Docker always warns that the login is "stored unencrypted" in
+		# /root/.docker/config.json. Here that login is the licence itself, which
+		# also sits in $DIR/licencia.nli: both are readable by root only. So we
+		# keep Docker's output to ourselves and say it plainly, and show Docker's
+		# own words only if the login fails.
+		if ! base64 <"$TMP/licencia.nli" | tr -d '\n' |
+			$SUDO docker login "$REGISTRO" -u nonimo --password-stdin >"$TMP/login" 2>&1; then
+			sed 's/^/  /' "$TMP/login" >&2
 			die "the registry refused the licence. Write to hello@nonimo.ai"
+		fi
+		say "Logged in. Docker keeps this login (your licence) in its own config file, readable by root only, so it can download updates."
 	fi
+	rm -f "$TMP/login"
 	rm -f "$TMP/licencia.nli"
 
 	COMPOSE="$SUDO${SUDO:+ }docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
