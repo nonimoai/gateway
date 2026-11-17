@@ -18,7 +18,7 @@ Página del producto: <https://nonimo.ai/es/gateway/> · Contacto: <hello@nonimo
 ## Instalación en una línea
 
 ```bash
-curl -fsSL https://nonimo.ai/gateway/instalar.sh | sh -s -- --codigo XXXX-XXXX-XXXX
+curl -fsSL https://nonimo.ai/gateway/install.sh | sh -s -- --code XXXX-XXXX-XXXX
 ```
 
 El instalador:
@@ -38,19 +38,23 @@ Si lo vuelves a ejecutar con un código nuevo, actualiza la licencia y la versi�
 Si tu política de seguridad no permite `curl | sh`, descarga el script, revísalo y ejecútalo. Es el mismo fichero que [`install.sh`](install.sh) de este repositorio.
 
 ```bash
-curl -fsSLo install.sh https://nonimo.ai/gateway/instalar.sh
+curl -fsSLo install.sh https://nonimo.ai/gateway/install.sh
 sha256sum install.sh   # compáralo con el valor del correo de tu licencia
 less install.sh
-sh install.sh --codigo XXXX-XXXX-XXXX
+sh install.sh --code XXXX-XXXX-XXXX
 ```
 
 | Opción | Valor de serie | Qué hace |
 |---|---|---|
-| `--codigo` | | Código de instalación de un solo uso (obligatorio) |
+| `--code` | | Código de instalación de un solo uso (obligatorio) |
 | `--dir` | `/opt/nonimo-gateway` | Carpeta de la instalación |
-| `--puerto` | `8080` | Puerto de la API, en `127.0.0.1` |
-| `--puerto-panel` | `8081` | Puerto del panel, en `127.0.0.1` |
-| `--ensayo` | | Ensayo: enseña lo que haría, no cambia nada y no gasta el código |
+| `--port` | `8080` | Puerto de la API, en `127.0.0.1` |
+| `--dashboard-port` | `8081` | Puerto del panel, en `127.0.0.1` |
+| `--dry-run` | | Ensayo: enseña lo que haría, no cambia nada y no gasta el código |
+
+Los nombres de antes siguen valiendo: `https://nonimo.ai/gateway/instalar.sh`, `--codigo`, `--puerto`, `--puerto-panel` y `--ensayo`.
+Si lo ejecutas sobre una instalación anterior, renombra `licencia.nli`, `clave_entrada.txt` y `clave_panel.txt` a los nombres de
+arriba y deja cada nombre antiguo como enlace al fichero nuevo.
 
 ## Entra en el panel
 
@@ -60,13 +64,13 @@ El panel solo escucha en el propio servidor. Desde tu ordenador, abre un túnel 
 ssh -L 8081:127.0.0.1:8081 tu-usuario@tu-servidor
 ```
 
-Después abre <http://localhost:8081> y entra con la clave del panel (`clave_panel.txt`).
+Después abre <http://localhost:8081> y entra con la clave del panel (`dashboard_key.txt`).
 
 Lo primero en el panel es poner la clave de tu proveedor de IA: OpenAI, Claude o los dos. El panel enseña también tu licencia, las peticiones que han pasado y los datos personales que ha tapado el Gateway.
 
 ## Apunta tu aplicación al Gateway
 
-El Gateway es compatible con las API de OpenAI y Anthropic. Tus aplicaciones usan como clave de API la **clave de acceso del Gateway** (`clave_entrada.txt`), no la de tu proveedor. La clave del proveedor se queda dentro del Gateway.
+El Gateway es compatible con las API de OpenAI y Anthropic. Tus aplicaciones usan como clave de API la **clave de acceso del Gateway** (`access_key.txt`), no la de tu proveedor. La clave del proveedor se queda dentro del Gateway.
 
 | | Dirección base | Clave de API |
 |---|---|---|
@@ -126,30 +130,30 @@ Los puertos del Gateway solo se abren en el propio servidor (`127.0.0.1`). Para 
 
 ## Instalación manual
 
-Si prefieres hacer cada paso tú, necesitas tu fichero de licencia, `licencia.nli`, y el correo de tu licencia, que trae la orden para entrar en el registro, el nombre de la imagen y la versión.
+Si prefieres hacer cada paso tú, necesitas tu fichero de licencia, `licence.nli`, y el correo de tu licencia, que trae la orden para entrar en el registro, el nombre de la imagen y la versión.
 
-Deja [`docker-compose.yml`](docker-compose.yml) y `licencia.nli` en la misma carpeta, y haz la licencia legible para el contenedor:
+Deja [`docker-compose.yml`](docker-compose.yml) y `licence.nli` en la misma carpeta, y haz la licencia legible para el contenedor:
 
 ```bash
-chmod 644 licencia.nli
+chmod 644 licence.nli
 ```
 
 Entra en el registro con la orden del correo de tu licencia. Lee la licencia por una tubería, así que no queda nada en el historial de la terminal:
 
 ```bash
-base64 -w0 licencia.nli | docker login descargas.nonimo.ai -u nonimo --password-stdin
+base64 -w0 licence.nli | docker login nonimo.ai -u nonimo --password-stdin
 ```
 
 Genera la clave de acceso de tus aplicaciones y la clave del panel:
 
 ```bash
-(umask 077; openssl rand -hex 32 > clave_entrada.txt; openssl rand -hex 32 > clave_panel.txt)
+(umask 077; openssl rand -hex 32 > access_key.txt; openssl rand -hex 32 > dashboard_key.txt)
 ```
 
 El Gateway corre con el usuario 65532, así que los dos ficheros tienen que ser de ese usuario y de nadie más:
 
 ```bash
-sudo chown 65532:65532 clave_entrada.txt clave_panel.txt && sudo chmod 400 clave_entrada.txt clave_panel.txt
+sudo chown 65532:65532 access_key.txt dashboard_key.txt && sudo chmod 400 access_key.txt dashboard_key.txt
 ```
 
 En `docker-compose.yml`, cambia `<image>` y `<version>` por el nombre de la imagen y la versión del correo de tu licencia. Después arranca el Gateway:

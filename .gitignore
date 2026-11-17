@@ -11,3 +11,9 @@ clave_panel.txt
 clave_openai.txt
 clave_anthropic.txt
 docker-compose.yml.bak-*
+# Current names (the old ones above stay for older installs)
+licence.nli
+access_key.txt
+dashboard_key.txt
+openai_key.txt
+anthropic_key.txt

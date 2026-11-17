@@ -15,45 +15,45 @@ services:
     # applications, and open the panel through an SSH tunnel.
     ports:
       - "127.0.0.1:8080:8080" # API for your applications
-      - "127.0.0.1:8081:8081" # admin panel
+      - "127.0.0.1:8081:8081" # dashboard
     environment:
-      NONIMO_LICENCIA: /run/secrets/licencia
-      NONIMO_CLAVE_ENTRADA_FICHERO: /run/secrets/clave_entrada
-      NONIMO_CLAVE_PANEL_FICHERO: /run/secrets/clave_panel
+      NONIMO_LICENCIA: /run/secrets/licence
+      NONIMO_CLAVE_ENTRADA_FICHERO: /run/secrets/access_key
+      NONIMO_CLAVE_PANEL_FICHERO: /run/secrets/dashboard_key
       NONIMO_PANEL: "1"
-      # Inside the container the panel listens on 0.0.0.0, or Docker's port
+      # Inside the container the dashboard listens on 0.0.0.0, or Docker's port
       # mapping can't reach it, and the Gateway only allows that with
       # NONIMO_PANEL_ABRIR_A_LA_RED. It is still private: "ports" above
       # publishes it on 127.0.0.1 only.
       NONIMO_PANEL_ESCUCHAR: 0.0.0.0
       NONIMO_PANEL_ABRIR_A_LA_RED: "1"
-      # Your AI provider key goes in the panel. If you prefer a file instead,
+      # Your AI provider key goes in the dashboard. If you prefer a file instead,
       # uncomment a block here and the matching lines under both "secrets".
       # OpenAI or a compatible provider:
-      # NONIMO_CLAVE_DESTINO_FICHERO: /run/secrets/clave_openai
+      # NONIMO_CLAVE_DESTINO_FICHERO: /run/secrets/openai_key
       # Claude (Anthropic):
-      # NONIMO_CLAVE_ANTHROPIC_FICHERO: /run/secrets/clave_anthropic
+      # NONIMO_CLAVE_ANTHROPIC_FICHERO: /run/secrets/anthropic_key
     volumes:
       - nonimo-datos:/var/lib/nonimo
     secrets:
-      - licencia
-      - clave_entrada
-      - clave_panel
-      # - clave_openai
-      # - clave_anthropic
+      - licence
+      - access_key
+      - dashboard_key
+      # - openai_key
+      # - anthropic_key
 
 volumes:
   nonimo-datos:
 
 secrets:
-  licencia:
-    file: ./licencia.nli
-  clave_entrada:
-    file: ./clave_entrada.txt
-  clave_panel:
-    file: ./clave_panel.txt
+  licence:
+    file: ./licence.nli
+  access_key:
+    file: ./access_key.txt
+  dashboard_key:
+    file: ./dashboard_key.txt
   # Key files: one line, owned by 65532:65532, mode 400.
-  # clave_openai:
-  #   file: ./clave_openai.txt
-  # clave_anthropic:
-  #   file: ./clave_anthropic.txt
+  # openai_key:
+  #   file: ./openai_key.txt
+  # anthropic_key:
+  #   file: ./anthropic_key.txt
